@@ -1,13 +1,13 @@
 document.addEventListener("DOMContentLoaded", function () {
     const apiKey = 'd3c39f57206d5904890771c822ffaac3'; 
 
-    const searchInput = document.querySelector(".search input");
-    const searchButton = document.querySelector(".search button");
-    const weatherCard = document.querySelector(".weather");
-    const errorCard = document.querySelector(".error");
-
-    searchButton.addEventListener("click", function () {
-        const cityName = searchInput.value.trim();
+    const nombreCiudad = document.querySelector(".search input");
+    const buscarCiudad = document.querySelector(".search button");
+    const tarjetaClima = document.querySelector(".weather");
+    const errorTarjeta = document.querySelector(".error");
+    const imagenclima = document.querySelector(".weather-icon")
+    buscarCiudad.addEventListener("click", function () {
+        const cityName = nombreCiudad.value;
 
         if (cityName !== "") {
             getWeatherData(cityName, apiKey);
@@ -25,7 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
                 displayWeatherData(weatherData);
             })
             .catch(function (error) {
-                showError("No se pudo obtener la información del tiempo para la ciudad ingresada.");
+                errorTarjeta.style.display= "block"
+                tarjetaClima.style.display = "none";
             });
     }
 
@@ -36,47 +37,43 @@ document.addEventListener("DOMContentLoaded", function () {
         const humidity = document.querySelector(".humidity");
         const windSpeed = document.querySelector(".wind");
 
-        weatherIcon.src = `images/${getWeatherIcon(weatherData.weather[0].icon)}.png`;
-        temperature.textContent = `${weatherData.main.temp.toFixed(1)}°C`;
+       
+        temperature.textContent = `${Math.round(weatherData.main.temp)}°C`;
         city.textContent = weatherData.name;
         humidity.textContent = `${weatherData.main.humidity}%`;
-        windSpeed.textContent = `${weatherData.wind.speed.toFixed(1)} km/h`;
+        windSpeed.textContent = `${weatherData.wind.speed} km/h`;
 
-        weatherCard.style.display = "block";
-        errorCard.style.display = "none";
+        tarjetaClima.style.display = "block";
+        errorTarjeta.style.display = "none";
+
+        const condClima = weatherData.weather[0]["main"]
+        if(condClima === "Clouds"){
+            imagenclima.src= "images/clouds.png"
+        } else if(condClima === "Clear"){
+            imagenclima.src= "images/clear.png"
+        }else if(condClima === "Drizzle"){
+            imagenclima.src= "images/drizzle.png"
+        }else if(condClima === "Humidity"){
+            imagenclima.src= "images/humidity.png"
+        }else if(condClima === "Mist"){
+            imagenclima.src= "images/mist.png"
+        }else if(condClima === "Rain"){
+            imagenclima.src= "images/rain.png"
+        }else if(condClima === "Snow"){
+            imagenclima.src= "images/snow.png"
+        }
+        
+
     }
 
-    function getWeatherIcon(iconCode) {
-        // Mapear códigos de iconos de OpenWeatherMap a nombres de archivos locales
-        const iconMappings = {
-            "01d": "clear-sky-day",
-            "01n": "clear-sky-night",
-            "02d": "few-clouds-day",
-            "02n": "few-clouds-night",
-            "03d": "scattered-clouds",
-            "03n": "scattered-clouds",
-            "04d": "broken-clouds",
-            "04n": "broken-clouds",
-            "09d": "shower-rain",
-            "09n": "shower-rain",
-            "10d": "rain-day",
-            "10n": "rain-night",
-            "11d": "thunderstorm-day",
-            "11n": "thunderstorm-night",
-            "13d": "snow-day",
-            "13n": "snow-night",
-            "50d": "mist-day",
-            "50n": "mist-night",
-        };
+    
 
-        return iconMappings[iconCode] || "unknown";
-    }
 
     function showError(message) {
         const errorMessage = document.querySelector(".error p");
         errorMessage.textContent = message;
 
-        weatherCard.style.display = "none";
-        errorCard.style.display = "block";
+        tarjetaClima.style.display = "none";
+        errorTarjeta.style.display = "block";
     }
 });
